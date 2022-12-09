@@ -1,3 +1,5 @@
 .DS_Store
 Machine Learning/.DS_Store
 Linear Algebra/.idea
+Linear Algebra/linalg/.__pycache__
+Linear Algebra/linalg/__init__.py
