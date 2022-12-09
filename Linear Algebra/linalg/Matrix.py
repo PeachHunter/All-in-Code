@@ -309,7 +309,7 @@ class Matrix(object):
     def det(self):
         """
         Use Recursion to Realize Determinant Calculation
-        :return:
+        :return: value
         """
         if not self.is_square():
             raise ValueError("Non-square Matrix do not have determinant. Calculate Singular Value Instead!")
@@ -329,6 +329,85 @@ class Matrix(object):
                 determinant += (-1) ** j * multiplier * Matrix(submatrix_data).det()
         return determinant
 
+    def delete(self, *args, axis=0):
+        """
+        delete the row or col of a Matrix and return the result
+        Note: This action will not modify the original data of the Matrix
+        :param args: ids of row or col to delete
+        :param axis: direction of the action
+        """
+        if axis == 0:
+            if max(args) >= self.row:
+                raise TypeError("Invalid Indices")
+            elif len(set(args)) == self.row:
+                raise TypeError("Null Matrix")
+        if axis == 1:
+            if max(args) >= self.col:
+                raise TypeError("Invalid Indices")
+            elif len(set(args)) == self.col:
+                raise TypeError("Null Matrix")
+
+        result = self.data.copy()
+        if axis == 0:
+            return Matrix([self.data[i] for i in range(self.row) if i not in args])
+        if axis == 1:
+            return Matrix([self.transpose.data[i] for i in range(self.col) if i not in args]).transpose
+
+    def inv(self):
+        """
+        Calculate the inverse matrix
+        :rtype: Matrix
+        """
+        if not self.is_square():
+            raise TypeError("Invalid Input Shape!")
+        inverse_res = [[0 for _ in range(self.col)] for _ in range(self.row)]
+        for i in range(self.row):
+            for j in range(self.col):
+                inverse_res[j][i] = (-1) ** (i + j) * self.delete(i, axis=0).delete(j, axis=1).det() / self.det()
+        return Matrix(inverse_res)
+
+    def swap_row(self, i, j):
+        """
+        swap two rows of the matrix
+        :return:
+        """
+        if max(i, j) >= self.row or min(i, j) < 0:
+            raise TypeError("Invalid Input!")
+        result = self.data.copy()
+        result[i], result[j] = result[j], result[i]
+        return Matrix(result)
+
+    def swap_col(self, i, j):
+        """
+        swap two cols of the matrix
+        :param i:
+        :param j:
+        :return:
+        """
+        if max(i, j) >= self.col or min(i, j) < 0:
+            raise TypeError("Invalid Input!")
+        result = self.transpose.data.copy()
+        result[i], result[j] = result[j], result[i]
+        return Matrix(result).transpose
+
+    def scalar_row(self, i, j, times):
+        """
+        Add or Subtract the i-th row from the times of j-th row
+        :param i:
+        :param j:
+        :param times:
+        :return:
+        """
+
+
+    # def gaussian_elim(self):
+    #     result = self.data.copy()
+    #     if self.row == 1:
+    #         return Matrix(result)
+    #     for i in range(1, self.row):
+    #         for j in range(i):
+    #             if result[i][j] != 0:
+    #                 multiplier = result[i][j] / result[j][j]
 
 
 
